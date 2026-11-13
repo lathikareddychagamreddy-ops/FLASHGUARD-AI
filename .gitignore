@@ -1,0 +1,11 @@
+__pycache__/
+.pytest_cache/
+.venv/
+venv/
+.env
+.env.*
+!.env.example
+*.db
+*.db-shm
+*.db-wal
+.vscode/tasks.json

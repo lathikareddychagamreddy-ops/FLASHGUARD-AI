@@ -1,0 +1,271 @@
+{
+  "model_version": "FlashGuard-v2.1-XGB",
+  "training_timestamp_utc": "2026-11-13T18:02:36.558479Z",
+  "dataset": {
+    "source": "Historical Order-Book Market Observations (10-minute windows)",
+    "instrument": "Deribit BTC-PERPETUAL",
+    "total_windows": 1500,
+    "train_windows": 1050,
+    "test_windows": 445,
+    "purge_gap_windows": 5,
+    "positive_crash_events_total": 166,
+    "positive_crash_events_test": 48
+  },
+  "target_definitions": {
+    "liquidity_classification": {
+      "classes": [
+        "Liquid",
+        "Fragmented (Depth Skew Proxy)",
+        "Illiquid"
+      ],
+      "description": "Multi-class classification of market liquidity state into Liquid, Fragmented (Proxy), or Illiquid."
+    },
+    "downside_risk_prediction": {
+      "name": "60-Second Downside-Move Risk (0.1%)",
+      "description": "Predicted risk score [0.0, 1.0] of a >0.1% downside move in next 60s."
+    },
+    "flash_crash_prediction": {
+      "name": "Genuine Flash-Crash Prediction (Spread Surge > 500% / Black Hole)",
+      "description": "Calibrated probability [0.0, 1.0] of an extreme liquidity black-hole collapse event."
+    }
+  },
+  "canonical_features": [
+    "bid_ask_spread",
+    "relative_spread_bps",
+    "spread_expansion_pct",
+    "book_depth_top5",
+    "volume_imbalance",
+    "liquidity_withdrawal_rate",
+    "realized_volatility_10m",
+    "trade_intensity_10m",
+    "cancel_pressure",
+    "volatility_spread_interaction"
+  ],
+  "feature_importances": {
+    "bid_ask_spread": 0.0008,
+    "relative_spread_bps": 0.0008,
+    "spread_expansion_pct": 0.2566,
+    "book_depth_top5": 0.1729,
+    "volume_imbalance": 0.0,
+    "liquidity_withdrawal_rate": 0.2914,
+    "realized_volatility_10m": 0.0013,
+    "trade_intensity_10m": 0.2575,
+    "cancel_pressure": 0.0001,
+    "volatility_spread_interaction": 0.0185
+  },
+  "historical_backtest": {
+    "test_windows_count": 445,
+    "correct_predictions": 420,
+    "incorrect_predictions": 25,
+    "true_positives": 23,
+    "true_negatives": 397,
+    "false_positives_false_alarms": 0,
+    "false_negatives_missed_events": 25,
+    "accuracy_pct": 94.38,
+    "precision_pct": 100.0,
+    "recall_pct": 47.92,
+    "f1_score": 0.6479,
+    "false_alarm_rate_pct": 0.0,
+    "prediction_lead_time": "60.0 seconds advance signal (~10-minute window horizon)",
+    "pr_auc": 0.74,
+    "roc_auc": 0.9381
+  },
+  "performance_metrics": {
+    "liquidity_classification": {
+      "xgboost": {
+        "log_loss": 0.0019,
+        "accuracy": 100.0,
+        "macro_f1": 1.0,
+        "precision_per_class": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "recall_per_class": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "f1_per_class": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "confusion_matrix": [
+          [
+            291,
+            0,
+            0
+          ],
+          [
+            0,
+            114,
+            0
+          ],
+          [
+            0,
+            0,
+            40
+          ]
+        ],
+        "class_distribution_test": [
+          291,
+          114,
+          40
+        ]
+      },
+      "random_forest": {
+        "log_loss": 0.0069,
+        "accuracy": 100.0,
+        "macro_f1": 1.0,
+        "confusion_matrix": [
+          [
+            291,
+            0,
+            0
+          ],
+          [
+            0,
+            114,
+            0
+          ],
+          [
+            0,
+            0,
+            40
+          ]
+        ]
+      },
+      "logistic_regression": {
+        "log_loss": 0.0166,
+        "accuracy": 100.0,
+        "macro_f1": 1.0,
+        "confusion_matrix": [
+          [
+            291,
+            0,
+            0
+          ],
+          [
+            0,
+            114,
+            0
+          ],
+          [
+            0,
+            0,
+            40
+          ]
+        ]
+      }
+    },
+    "downside_risk_prediction": {
+      "model": "XGBoost Regressor",
+      "mse": 0.008251,
+      "rmse": 0.09084,
+      "mae": 0.06255,
+      "r2_score": 0.8441,
+      "roc_auc": 0.9572,
+      "brier_score": 0.09219,
+      "positive_events_in_test": 111,
+      "total_test_samples": 445,
+      "false_alarm_rate": 0.0599,
+      "avg_inference_latency_ms": 2.18
+    },
+    "genuine_flash_crash": {
+      "model": "XGBoost Binary Classifier",
+      "accuracy": 94.38,
+      "precision": 100.0,
+      "recall": 47.92,
+      "f1_score": 0.6479,
+      "roc_auc": 0.9381,
+      "pr_auc": 0.74,
+      "brier_score": 0.04916,
+      "confusion_matrix": [
+        [
+          397,
+          0
+        ],
+        [
+          25,
+          23
+        ]
+      ],
+      "positive_test_events": 48,
+      "negative_test_events": 397,
+      "false_alarm_rate": 0.0
+    }
+  },
+  "baseline_feature_distributions": {
+    "bid_ask_spread": {
+      "mean": 0.11929001904761904,
+      "std": 0.1828284066289367,
+      "median": 0.042230000000000004,
+      "q25": 0.027174999999999998,
+      "q75": 0.121025
+    },
+    "relative_spread_bps": {
+      "mean": 9.683952295624978,
+      "std": 15.271343206069933,
+      "median": 3.536470601137335,
+      "q25": 2.1224406010827557,
+      "q75": 9.182837726997665
+    },
+    "spread_expansion_pct": {
+      "mean": 135.79264761904759,
+      "std": 256.0286381188443,
+      "median": 34.705,
+      "q25": 11.8975,
+      "q75": 154.74
+    },
+    "book_depth_top5": {
+      "mean": 7174.128666666667,
+      "std": 4296.94586085636,
+      "median": 7050.4,
+      "q25": 3281.525,
+      "q75": 10826.975
+    },
+    "volume_imbalance": {
+      "mean": 0.009315809523809523,
+      "std": 0.21276810447854322,
+      "median": 0.0133,
+      "q25": -0.08889999999999999,
+      "q75": 0.102975
+    },
+    "liquidity_withdrawal_rate": {
+      "mean": 0.1754094761904762,
+      "std": 0.23785522479063145,
+      "median": 0.07997499999999999,
+      "q25": 0.0411625,
+      "q75": 0.19305
+    },
+    "realized_volatility_10m": {
+      "mean": 0.024593314285714287,
+      "std": 0.027112716118110048,
+      "median": 0.013565,
+      "q25": 0.0092125,
+      "q75": 0.0283
+    },
+    "trade_intensity_10m": {
+      "mean": 1509.1095238095238,
+      "std": 840.7499998752598,
+      "median": 1513.0,
+      "q25": 848.25,
+      "q75": 2220.75
+    },
+    "cancel_pressure": {
+      "mean": 0.05160918031904762,
+      "std": 0.12620648175340818,
+      "median": 0.005536432500000001,
+      "q25": 0.0022103837500000003,
+      "q75": 0.028539229999999995
+    },
+    "volatility_spread_interaction": {
+      "mean": 0.0856222761104762,
+      "std": 0.23306884043606463,
+      "median": 0.0034727219999999997,
+      "q25": 0.0011902765,
+      "q75": 0.040119312
+    }
+  }
+}
